@@ -1,0 +1,2 @@
+/home/hein/newproj/CMakeFiles/edit_cache.dir
+/home/hein/newproj/CMakeFiles/rebuild_cache.dir
