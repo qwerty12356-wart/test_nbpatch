@@ -11,3 +11,11 @@ void Patch_Permissive_Mmap_Houdini13_39190(){
     #endif
 
 }
+
+void Patch_Permissive_Mprotect_Houdini13_39190(){
+    #ifdef IS32BIT
+
+    #else
+
+    #endif
+}
