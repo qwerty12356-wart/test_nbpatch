@@ -5,14 +5,8 @@
 
 typedef bool (*initfn)(const NativeBridgeRuntimeCallbacks*, const char*, const char*);
 
-
-enum{
-    HOUDINI13_39190_INDEX = 0,
-    NDK_TRANS13_INDEX = 1
-};
-
 initfn org_init = nullptr;
-void* nbbase = nullptr;
+
 int nbsize = 6291456; //Arbitrary Number
 unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 

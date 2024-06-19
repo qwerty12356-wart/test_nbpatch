@@ -1,6 +1,5 @@
 #pragma once
 
-#include "asm-generic/mman-common.h"
 #include <jni.h>
 #include <android/log.h>
 #include <dlfcn.h>
