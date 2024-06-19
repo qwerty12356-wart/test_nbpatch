@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 
+
+if(NOT DEFINED COMPILE_ARCH)
+    set(COMPILE_ARCH x86_64)
+endif()
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -9,28 +14,39 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(cmakescript)
-set(ANDROID_NDK_HOME ~/Downloads/android-ndk-r26d) #SET YOUR NDK PATH HERE.
+
+
+
+set(ANDROID_NDK_HOME ~/Downloads/android-ndk-r26d)
+if (DEFINED ENV{ANDROID_NDK_HOME})
+    set(ANDROID_NDK_HOME $ENV{ANDROID_NDK_HOME})
+endif()
+
+
 
 include(${cmakescript_SOURCE_DIR}/c++-standards.cmake)
 
 cxx_20()
 set(CMAKE_ANDROID_NDK ${ANDROID_NDK_HOME})
 set(ANDROID_PLATFORM 30) #Android 11 SDK ver
-set(ANDROID_ABI x86_64)
+
+
+
+set(ANDROID_ABI COMPILE_ARCH)
 set(ANDROID_STL c++_static)
 set(ANDROID_CPP_FEATURES,"no-rtti no-exceptions")
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 
 
 project(libnbpatcher)
 set(CMAKE_SYSTEM_NAME Android)
 set(CMAKE_SYSTEM_VERSION 30)
-set(CMAKE_ANDROID_ARCH_ABI x86_64)
+set(CMAKE_ANDROID_ARCH_ABI COMPILE_ARCH)
 set(CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION clang)
 set(CMAKE_ANDROID_STL_TYPE c++_static)
 set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
 
-message("${CMAKE_ANDROID_NDK_VERSION}")
+#message("${CMAKE_ANDROID_NDK_VERSION}")
 #include_directories(${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include)
-message(${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)

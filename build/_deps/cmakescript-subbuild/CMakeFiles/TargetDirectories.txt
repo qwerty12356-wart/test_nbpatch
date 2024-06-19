@@ -1,0 +1,3 @@
+/home/hein/newproj/build/_deps/cmakescript-subbuild/CMakeFiles/cmakescript-populate.dir
+/home/hein/newproj/build/_deps/cmakescript-subbuild/CMakeFiles/edit_cache.dir
+/home/hein/newproj/build/_deps/cmakescript-subbuild/CMakeFiles/rebuild_cache.dir

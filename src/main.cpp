@@ -1,66 +1,68 @@
+#include "asm-generic/mman-common.h"
 #include <jni.h>
 #include <android/log.h>
 #include <dlfcn.h>
+#include <sys/mman.h>
 
 #define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
 
 struct NativeBridgeRuntimeCallbacks {
-  // Get shorty of a Java method. The shorty is supposed to be persistent in memory.
-  //
-  // Parameters:
-  //   env [IN] pointer to JNIenv.
-  //   mid [IN] Java methodID.
-  // Returns:
-  //   short descriptor for method.
   const char* (*getMethodShorty)(JNIEnv* env, jmethodID mid);
-  // Get number of native methods for specified class.
-  //
-  // Parameters:
-  //   env [IN] pointer to JNIenv.
-  //   clazz [IN] Java class object.
-  // Returns:
-  //   number of native methods.
   uint32_t (*getNativeMethodCount)(JNIEnv* env, jclass clazz);
-  // Get at most 'method_count' native methods for specified class 'clazz'. Results are outputed
-  // via 'methods' [OUT]. The signature pointer in JNINativeMethod is reused as the method shorty.
-  //
-  // Parameters:
-  //   env [IN] pointer to JNIenv.
-  //   clazz [IN] Java class object.
-  //   methods [OUT] array of method with the name, shorty, and fnPtr.
-  //   method_count [IN] max number of elements in methods.
-  // Returns:
-  //   number of method it actually wrote to methods.
   uint32_t (*getNativeMethods)(JNIEnv* env, jclass clazz, JNINativeMethod* methods,
                                uint32_t method_count);
 };
 
 //this is only part of the full Callbacks definition but should be good enough
 struct NativeBridgeCallbacks {
-  // Version number of the interface.
   uint32_t version;
-  // Initialize native bridge. Native bridge's internal implementation must ensure MT safety and
-  // that the native bridge is initialized only once. Thus it is OK to call this interface for an
-  // already initialized native bridge.
-  //
-  // Parameters:
-  //   runtime_cbs [IN] the pointer to NativeBridgeRuntimeCallbacks.
-  // Returns:
-  //   true if initialization was successful.
   bool (*initialize)(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private_dir,
                      const char* instruction_set);
 };
 
+void Patch_Permissive_Mprotect_Houdini13_39190();
+
+void Patch_Permissive_Mmap_Houdini13_39190();
+
+
 typedef bool (*initfn)(const NativeBridgeRuntimeCallbacks*, const char*, const char*);
+typedef void (*patchfn)();
+
+static const patchfn Patch_Permissive_Mprotect[]{
+    Patch_Permissive_Mprotect_Houdini13_39190
+};
+static const patchfn Patch_Permissive_Mmap[]{
+    Patch_Permissive_Mmap_Houdini13_39190
+};
+
+
+enum{
+    HOUDINI13_39190_INDEX = 0,
+    NDK_TRANS13_INDEX = 1
+};
+
 initfn org_init = nullptr;
 void* nbbase = nullptr;
+int nbsize = 6291456; //Arbitrary Number
+unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 
-bool x_init(const NativeBridgeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
+
+
+
+
+bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
+    //privatedir SHOULD contain the app ID or whatever, use it to identify
     
+    mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
+
+
+    mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+    int initreturn = org_init(runtime_cbs, privatedir, insrt_set);
+    return initreturn;
 }
 
 
-int patch_main(void* nblibaddr){
+int patch_main(void* nblibaddr, int size,unsigned short nbindex){
     Dl_info dlinfo{};
     dladdr("NativeBridgeItf" ,&dlinfo);
     if (dlinfo.dli_saddr){
@@ -69,6 +71,8 @@ int patch_main(void* nblibaddr){
             org_init = ncbs->initialize;
             ncbs->initialize = (initfn)x_init;
             nbbase = nblibaddr;
+            nbsize = size;
+            g_nbindex = nbindex;
             return 0;
         }
     }
