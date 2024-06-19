@@ -5,6 +5,16 @@
 #include <dlfcn.h>
 #include <sys/mman.h>
 
+
+#if INTPTR_MAX == INT32_MAX
+    #define IS32BIT
+#else
+    #define IS64BIT
+#endif
+
+
+
+
 #define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
 
 enum{
