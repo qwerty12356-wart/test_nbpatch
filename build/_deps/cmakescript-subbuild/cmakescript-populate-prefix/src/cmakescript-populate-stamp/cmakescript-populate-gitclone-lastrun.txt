@@ -1,3 +1,0 @@
-repository='https://github.com/StableCoder/cmake-scripts.git'
-module=''
-tag='origin'

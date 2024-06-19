@@ -1,5 +1,0 @@
-/home/hein/newproj/build/CMakeFiles/edit_cache.dir
-/home/hein/newproj/build/CMakeFiles/rebuild_cache.dir
-/home/hein/newproj/build/src/CMakeFiles/nbpatch.dir
-/home/hein/newproj/build/src/CMakeFiles/edit_cache.dir
-/home/hein/newproj/build/src/CMakeFiles/rebuild_cache.dir
