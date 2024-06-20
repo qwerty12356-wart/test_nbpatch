@@ -7,7 +7,7 @@ typedef bool (*initfn)(const NativeBridgeRuntimeCallbacks*, const char*, const c
 
 initfn org_init = nullptr;
 
-int nbsize = 6291456; //Arbitrary Number
+unsigned int nbsize = 6291456; //Arbitrary Number
 unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 
 
@@ -26,7 +26,7 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
 }
 
 
-int patch_main(void* nblibaddr, int size,unsigned short nbindex){
+int patch_main(void* nblibaddr,unsigned short nbindex){
     Dl_info dlinfo{};
     dladdr("NativeBridgeItf" ,&dlinfo);
     if (dlinfo.dli_saddr){
@@ -35,7 +35,7 @@ int patch_main(void* nblibaddr, int size,unsigned short nbindex){
             org_init = ncbs->initialize;
             ncbs->initialize = (initfn)x_init;
             nbbase = nblibaddr;
-            nbsize = size;
+            nbsize = GetSizeFromIndex(nbindex);
             g_nbindex = nbindex;
             return 0;
         }
