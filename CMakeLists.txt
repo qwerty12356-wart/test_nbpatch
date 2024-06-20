@@ -32,20 +32,20 @@ set(ANDROID_PLATFORM 30) #Android 11 SDK ver
 
 
 
-set(ANDROID_ABI COMPILE_ARCH)
+set(ANDROID_ABI ${COMPILE_ARCH})
 set(ANDROID_STL c++_static)
 set(ANDROID_CPP_FEATURES,"no-rtti no-exceptions")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
+set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
 
 
 project(libnbpatcher)
 set(CMAKE_SYSTEM_NAME Android)
 set(CMAKE_SYSTEM_VERSION 30)
-set(CMAKE_ANDROID_ARCH_ABI COMPILE_ARCH)
+set(CMAKE_ANDROID_ARCH_ABI ${COMPILE_ARCH})
 set(CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION clang)
 set(CMAKE_ANDROID_STL_TYPE c++_static)
-set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
+
 
 #message("${CMAKE_ANDROID_NDK_VERSION}")
 #include_directories(${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include)
