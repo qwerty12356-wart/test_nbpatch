@@ -39,6 +39,23 @@ struct NativeBridgeCallbacks {
 };
 
 
+
+static unsigned int GetSizeFromIndex(unsigned short index){
+    switch (index){
+    case HOUDINI13_39190_INDEX:
+    {
+        return 7 * 1024 * 1024;
+    }
+    case NDK_TRANS13_INDEX:
+    {
+        return 3 * 1024 * 1024;
+    }
+    default:{
+        return 4 * 1024 * 1024;
+    }
+    }
+}
+
 static void* nbbase = nullptr;
 
 //Details NB specific patches down here.
