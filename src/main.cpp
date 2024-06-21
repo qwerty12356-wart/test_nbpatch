@@ -6,8 +6,7 @@
 typedef bool (*initfn)(const NativeBridgeRuntimeCallbacks*, const char*, const char*);
 
 initfn org_init = nullptr;
-
-unsigned int nbsize = 6291456; //Arbitrary Number
+unsigned int nbsize = GetSizeFromIndex(0);
 unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 
 
@@ -16,8 +15,10 @@ unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 
 bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
     //privatedir SHOULD contain the app ID or whatever, use it to identify
-    
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
+    Patch_Permissive_Mprotect(g_nbindex);
+    Patch_Permissive_Mmap(g_nbindex);
+
 
 
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);

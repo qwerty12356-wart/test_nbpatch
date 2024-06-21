@@ -15,11 +15,11 @@
 
 
 
-#define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
-
+//#define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
+#define debug_print(...) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", __VA_ARGS__)
 enum{
     HOUDINI13_39190_INDEX = 0,
-    NDK_TRANS13_INDEX = 1
+    NDK_TRANS13_R125_15853_INDEX = 1
 };
 
 typedef void (*patchfn)();
@@ -46,7 +46,7 @@ static unsigned int GetSizeFromIndex(unsigned short index){
     {
         return 7 * 1024 * 1024;
     }
-    case NDK_TRANS13_INDEX:
+    case NDK_TRANS13_R125_15853_INDEX:
     {
         return 3 * 1024 * 1024;
     }
@@ -63,6 +63,13 @@ void Patch_Permissive_Mprotect_Houdini13_39190();
 
 void Patch_Permissive_Mmap_Houdini13_39190();
 
+void Patch_Permissive_MProtect_NDK_Translation_R125_15853();
+
+void Patch_Permissive_Mmap_NDK_Translation_R125_15853();
+
+void Patch_Performance_Mprotect_Houdini13_39190();
+
+
 
 //General NB patches:
 inline void Patch_Permissive_Mprotect(unsigned short index){
@@ -70,11 +77,28 @@ inline void Patch_Permissive_Mprotect(unsigned short index){
         case HOUDINI13_39190_INDEX:
         {
             Patch_Permissive_Mprotect_Houdini13_39190();
+            Patch_Performance_Mprotect_Houdini13_39190();
+            break;
+        }
+        case NDK_TRANS13_R125_15853_INDEX:
+        {
+            Patch_Permissive_MProtect_NDK_Translation_R125_15853();
             break;
         }
     }
 }
 
 inline void Patch_Permissive_Mmap(unsigned short index){
-
+    switch(index){
+        case HOUDINI13_39190_INDEX:
+        {
+            Patch_Permissive_Mmap_Houdini13_39190();
+            break;
+        }
+        case NDK_TRANS13_R125_15853_INDEX:
+        {
+            Patch_Permissive_Mmap_NDK_Translation_R125_15853();
+            break;
+        }
+    }
 }
