@@ -1,4 +1,5 @@
 #include "main.h"
+#include <android/log.h>
 #include <dlfcn.h>
 
 
@@ -16,6 +17,7 @@ unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 
 bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
     //privatedir SHOULD contain the app ID or whatever, use it to identify
+    __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Begin Hex patching native bridge");
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
@@ -29,6 +31,7 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
 #define LIBRARY_ADDRESS_BY_HANDLE(dlhandle) ((NULL == dlhandle) ? NULL : (void*)*(size_t const*)(dlhandle))
 
 int patch_main(void* nbhandle,unsigned short nbindex){
+    __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patching initialize");
     NativeBridgeCallbacks* nbcallbacks = (NativeBridgeCallbacks*)dlsym(nbhandle, "NativeBridgeItf");
     if (LIBRARY_ADDRESS_BY_HANDLE(nbhandle)){
        nbbase = LIBRARY_ADDRESS_BY_HANDLE(nbhandle);
@@ -39,7 +42,7 @@ int patch_main(void* nbhandle,unsigned short nbindex){
             mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
             nbcallbacks->initialize = (initfn)x_init;
             mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
-
+            __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patched initialize");
             return 0;
         }
     }
