@@ -1,4 +1,5 @@
 #include "main.h"
+#include <dlfcn.h>
 
 
 
@@ -25,23 +26,18 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
     int initreturn = org_init(runtime_cbs, privatedir, insrt_set);
     return initreturn;
 }
+#define LIBRARY_ADDRESS_BY_HANDLE(dlhandle) ((NULL == dlhandle) ? NULL : (void*)*(size_t const*)(dlhandle))
 
-
-int patch_main(void* nblibaddr,unsigned short nbindex){
-    Dl_info dlinfo{};
-    dladdr("NativeBridgeItf" ,&dlinfo);
-    if (dlinfo.dli_saddr){
-        NativeBridgeCallbacks* ncbs = reinterpret_cast<NativeBridgeCallbacks*>(dlinfo.dli_saddr);
-        if (ncbs->initialize){
-            org_init = ncbs->initialize;
-            
-            nbbase = nblibaddr;
-            nbsize = GetSizeFromIndex(nbindex);
-            g_nbindex = nbindex;
-
-            
+int patch_main(void* nbhandle,unsigned short nbindex){
+    NativeBridgeCallbacks* nbcallbacks = (NativeBridgeCallbacks*)dlsym(nbhandle, "NativeBridgeItf");
+    if (LIBRARY_ADDRESS_BY_HANDLE(nbhandle)){
+       nbbase = LIBRARY_ADDRESS_BY_HANDLE(nbhandle);
+       nbsize = GetSizeFromIndex(nbindex);
+       g_nbindex = nbindex;
+        if (nbcallbacks->initialize){
+            org_init = nbcallbacks->initialize;
             mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
-            ncbs->initialize = (initfn)x_init;
+            nbcallbacks->initialize = (initfn)x_init;
             mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
 
             return 0;
