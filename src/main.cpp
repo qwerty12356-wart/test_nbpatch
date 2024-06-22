@@ -30,6 +30,8 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
 }
 #define LIBRARY_ADDRESS_BY_HANDLE(dlhandle) ((NULL == dlhandle) ? NULL : (void*)*(size_t const*)(dlhandle))
 
+//Prevent name mangling
+extern "C"
 int patch_main(void* nbhandle,unsigned short nbindex){
     __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patching initialize");
     NativeBridgeCallbacks* nbcallbacks = (NativeBridgeCallbacks*)dlsym(nbhandle, "NativeBridgeItf");
