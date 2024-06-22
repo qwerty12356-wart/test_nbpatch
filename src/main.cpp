@@ -34,10 +34,16 @@ int patch_main(void* nblibaddr,unsigned short nbindex){
         NativeBridgeCallbacks* ncbs = reinterpret_cast<NativeBridgeCallbacks*>(dlinfo.dli_saddr);
         if (ncbs->initialize){
             org_init = ncbs->initialize;
-            ncbs->initialize = (initfn)x_init;
+            
             nbbase = nblibaddr;
             nbsize = GetSizeFromIndex(nbindex);
             g_nbindex = nbindex;
+
+            
+            mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
+            ncbs->initialize = (initfn)x_init;
+            mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+
             return 0;
         }
     }
