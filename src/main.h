@@ -82,6 +82,22 @@ void Patch_Linker_namespace_Houdini12_38818();
 
 
 //General NB patches:
+inline void Patch_Performance_Mprotect(unsigned short index){
+    switch (index){
+        case HOUDINI13_39190_INDEX:
+        {
+            Patch_Performance_Mprotect_Houdini13_39190();
+            break;
+        }
+        case HOUDINI12_38818_INDEX:
+        {
+            Patch_Performance_Mprotect_Houdini12_38818();
+            break;
+        }
+    }
+}
+
+
 inline void Patch_Linker_namespace(unsigned short index){
     switch(index){
         case HOUDINI13_39190_INDEX:
@@ -103,7 +119,6 @@ inline void Patch_Permissive_Mprotect(unsigned short index){
         case HOUDINI13_39190_INDEX:
         {
             Patch_Permissive_Mprotect_Houdini13_39190();
-            Patch_Performance_Mprotect_Houdini13_39190();
             break;
         }
         case NDK_TRANS13_R125_15853_INDEX:
@@ -114,7 +129,7 @@ inline void Patch_Permissive_Mprotect(unsigned short index){
         case HOUDINI12_38818_INDEX:
         {
             Patch_Permissive_Mprotect_Houdini12_38818();
-            Patch_Performance_Mprotect_Houdini12_38818();
+            
             break;
         }
     }

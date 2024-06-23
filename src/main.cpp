@@ -1,5 +1,6 @@
 #include "main.h"
 #include <android/log.h>
+#include <cstring>
 #include <dlfcn.h>
 
 
@@ -22,7 +23,10 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
     Patch_Linker_namespace(g_nbindex);
-
+    const char* found = strstr(privatedir, "com.nexon.bluearchive");
+    if (found != 0){
+        Patch_Performance_Mprotect(g_nbindex);
+    }
 
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
     int initreturn = org_init(runtime_cbs, privatedir, insrt_set);
@@ -53,7 +57,7 @@ int patch_main(void* ext_nbbase,unsigned short nbindex){
         }
     }
     */
-    if (!initguard){
+    if (!initguard && ext_nbbase != 0){
         initguard = true;
         __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", "Begin patching with %ld", (long)ext_nbbase);
         nbbase = ext_nbbase;
