@@ -21,7 +21,7 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
-
+    Patch_Linker_namespace(g_nbindex);
 
 
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);

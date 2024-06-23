@@ -82,3 +82,29 @@ void Patch_Permissive_Mmap_Houdini12_38818(){
         debug_print("Patch_Permissive_Mmap failed.");
     }
 }
+
+void Patch_Linker_namespace_Houdini13_39190(){
+    int res = 0;
+    #ifdef IS32BIT
+        //No 32 bit because im too lazy
+    #else
+        res = PatchHex_32(nbbase, 0x460b78, 0xFFBB93E8, 0x90909090);
+        res |= PatchHex_8(nbbase, 0x460b7c, 0xff, 0x90);
+    #endif
+    if (res){
+        debug_print("Patch_Linker_namespace failed.");
+    }
+}
+
+void Patch_Linker_namespace_Houdini12_38818(){
+    int res = 0;
+     #ifdef IS32BIT
+
+    #else
+        res = PatchHex_32(nbbase, 0x335e1a, 0x0042D1E8, 0x90909090);
+        res |= PatchHex_8(nbbase, 0x335e1e, 0x00, 0x90);
+    #endif
+    if (res){
+        debug_print("Patch_Linker_namespace failed.");
+    }
+}

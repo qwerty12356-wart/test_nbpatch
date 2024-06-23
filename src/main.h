@@ -76,11 +76,27 @@ void Patch_Permissive_MProtect_NDK_Translation_R125_15853();
 
 void Patch_Permissive_Mmap_NDK_Translation_R125_15853();
 
-
+void Patch_Linker_namespace_Houdini13_39190();
+void Patch_Linker_namespace_Houdini12_38818();
 
 
 
 //General NB patches:
+inline void Patch_Linker_namespace(unsigned short index){
+    switch(index){
+        case HOUDINI13_39190_INDEX:
+        {
+            Patch_Linker_namespace_Houdini13_39190();
+            break;
+        }
+        case HOUDINI12_38818_INDEX:
+        {
+            Patch_Linker_namespace_Houdini12_38818();
+        }
+    }
+}
+
+
 inline void Patch_Permissive_Mprotect(unsigned short index){
     switch(index){
         case HOUDINI13_39190_INDEX:
