@@ -51,13 +51,17 @@ static unsigned int GetSizeFromIndex(unsigned short index){
     {
         return 3 * 1024 * 1024;
     }
+    case HOUDINI12_38818_INDEX:
+    {
+        return 7 * 1024 * 1024;
+    }
     default:{
         return 4 * 1024 * 1024;
     }
     }
 }
 
-static void* nbbase = nullptr;
+inline void* nbbase = nullptr;
 
 //Details NB specific patches down here.
 void Patch_Permissive_Mprotect_Houdini13_39190();
