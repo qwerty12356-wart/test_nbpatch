@@ -75,7 +75,7 @@ void Patch_Permissive_Mmap_Houdini12_38818(){
     #ifdef IS32BIT
         res = PatchHex_32(nbbase, 0x26d3a7, 0x02F0BA0F, 0xF8909090);
     #else
-        res = PatchHex_32(nbbase, 0x2f3ae1, 0xFFFFB848, 0xFFFFB848);
+        res = PatchHex_32(nbbase, 0x2f3ae1, 0xFFFBB848, 0xFFFFB848);
         
     #endif
     if (res){
