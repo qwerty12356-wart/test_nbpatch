@@ -33,20 +33,21 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
 bool init_guard = false;
 //Prevent name mangling
 extern "C"
-int patch_main(void* nbhandle,unsigned short nbindex){
+int patch_main(void* ext_nbbase,unsigned short nbindex){
     if (!init_guard){
         init_guard = true;
     __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patching initialize");
+    void* nbhandle = dlopen("libhoudini.so", RTLD_LOCAL);
     NativeBridgeCallbacks* nbcallbacks = (NativeBridgeCallbacks*)dlsym(nbhandle, "NativeBridgeItf");
-    if (LIBRARY_ADDRESS_BY_HANDLE(nbhandle)){
-       nbbase = LIBRARY_ADDRESS_BY_HANDLE(nbhandle);
+    if (ext_nbbase){
+       nbbase = ext_nbbase;
        nbsize = GetSizeFromIndex(nbindex);
        g_nbindex = nbindex;
         if (nbcallbacks->initialize){
             org_init = nbcallbacks->initialize;
-            mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
+            mprotect(nbcallbacks, 128, PROT_EXEC | PROT_WRITE | PROT_READ);
             nbcallbacks->initialize = (initfn)x_init;
-            mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+            mprotect(nbcallbacks, 128, PROT_EXEC | PROT_READ);
             __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patched initialize");
             return 0;
         }
