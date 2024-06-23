@@ -6,14 +6,7 @@
 
 //Return 0 on success, return 1 on failure.
 //4 HEX ie FF FF FF FF
-inline int PatchHex_32(void* baseaddress,unsigned int offset, uint32_t original_hex, uint32_t new_hex){
-    uint32_t* addrtocheck = (uint32_t*)((uint8_t*)baseaddress + offset); //yup, a hack to fix a dumb compiler bug
-    if (*addrtocheck == original_hex){
-        *addrtocheck = new_hex;
-        return 0;
-    }
-    return 1;
-}
+int PatchHex_32(void* baseaddress,long offset, uint32_t original_hex, uint32_t new_hex);
 
 //2 HEX ie FF FF
 inline int PatchHex_16(void* baseaddress, int offset, uint16_t original_hex, uint16_t new_hex){
