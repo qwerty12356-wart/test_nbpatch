@@ -92,6 +92,7 @@ inline void Patch_Linker_namespace(unsigned short index){
         case HOUDINI12_38818_INDEX:
         {
             Patch_Linker_namespace_Houdini12_38818();
+            break;
         }
     }
 }
