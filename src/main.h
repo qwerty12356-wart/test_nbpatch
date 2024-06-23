@@ -96,7 +96,7 @@ inline void Patch_Permissive_Mprotect(unsigned short index){
         }
         case HOUDINI12_38818_INDEX:
         {
-            Patch_Permissive_Mmap_Houdini12_38818();
+            Patch_Permissive_Mprotect_Houdini12_38818();
             Patch_Performance_Mprotect_Houdini12_38818();
             break;
         }
