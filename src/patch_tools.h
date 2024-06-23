@@ -1,4 +1,5 @@
 #pragma once
+#include <android/log.h>
 #include <cstdint>
 #include <dlfcn.h>
 
@@ -24,6 +25,9 @@ inline int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8
     if (*addrtocheck == original_hex){
         *addrtocheck = new_hex;
         return 0;
+    }
+    if (*addrtocheck == new_hex){
+        __android_log_print(ANDROID_LOG_ERROR, "libnbpatcher", "Hex matches but failed to apply patch");
     }
     return 1;
 }

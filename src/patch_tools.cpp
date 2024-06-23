@@ -25,7 +25,11 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
             *addrtocheck = new_hex;
             return 0;
         }
-        __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", "Failed to patch hex %u at %ld", *addrtocheck, workaroundvar);
+        if (*addrtocheck == new_hex){
+            __android_log_print(ANDROID_LOG_ERROR, "libnbpatcher", "Hex match but hex patches is not applied!");
+        }
+        __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", "Failed to patch hex %u at %ld (original_hex: %u, new_hex: %u)", *addrtocheck, workaroundvar, original_hex, new_hex);
+
 
     #endif
     return 1;
