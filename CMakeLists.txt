@@ -34,7 +34,7 @@ set(ANDROID_PLATFORM 30) #Android 11 SDK ver
 
 set(ANDROID_ABI ${COMPILE_ARCH})
 set(ANDROID_STL c++_static)
-set(ANDROID_CPP_FEATURES,"no-rtti no-exceptions")
+#set(ANDROID_CPP_FEATURES,"no-rtti no-exceptions")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake)
 
