@@ -1,6 +1,7 @@
 #include "patch_tools.h"
 #include <cstdint>
 #include <android/log.h>
+#include "main.h"
 #if INTPTR_MAX == INT32_MAX
     #define IS_32
 #else
@@ -11,7 +12,7 @@
 //Please don't jinx this up, compiler
 int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint32_t new_hex){
 
-
+    /*
     #ifdef IS_32
     uint32_t* addrtocheck = (uint32_t*)((char*)baseaddress + offset); //yup, a hack to fix a dumb compiler bug
     if (*addrtocheck == original_hex){
@@ -23,6 +24,7 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
         uint32_t* addrtocheck = (uint32_t*)workaroundvar; //Lol
         if (*addrtocheck == original_hex){
             *addrtocheck = new_hex;
+            __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", "PatchHex_32 sucessfully");
             return 0;
         }
         if (*addrtocheck == new_hex){
@@ -32,5 +34,56 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
 
 
     #endif
+    */
+        #ifdef IS_32
+        uint32_t* addrtocheck = (uint32_t*)baseaddress + (uint32_t)offset;
+        #else
+        uint32_t* addrtocheck = (uint32_t*)baseaddress + offset;
+        #endif
+        if ((addrtocheck - (uint32_t*)nbbase) > nbsize){
+            error_print("Patching out of range!");
+            return 1;
+        }
+        if (*addrtocheck != original_hex){
+            error_print("Hex %u mismatch at %lld (new hex is %u, original_hex is %u)", *addrtocheck, (unsigned long long)addrtocheck, new_hex, original_hex);
+            return 1;
+        }
+        if (*addrtocheck == new_hex){
+            error_print("Already patched!");
+            return 1;
+        }
+        if (*addrtocheck == original_hex){
+            *addrtocheck = new_hex;
+            info_print("PatchHex_32 Patched successfully");
+            return 0;
+        }
+        error_print("How did we get here");
+    return 1;
+}
+
+int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
+    #ifdef IS_32
+        uint32_t* addrtocheck = (uint32_t*)baseaddress + (uint32_t)offset;
+        #else
+        uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
+        #endif
+        if ((addrtocheck - (uint8_t*)nbbase) > nbsize){
+            error_print("Patching out of range!");
+            return 1;
+        }
+        if (*addrtocheck != original_hex){
+            error_print("Hex %u mismatch at %lld (new hex is %u, original_hex is %u)", *addrtocheck, (unsigned long long)addrtocheck, new_hex, original_hex);
+            return 1;
+        }
+        if (*addrtocheck == new_hex){
+            error_print("Already patched!");
+            return 1;
+        }
+        if (*addrtocheck == original_hex){
+            *addrtocheck = new_hex;
+            info_print("PatchHex_32 Patched successfully");
+            return 0;
+        }
+        error_print("How did we get here");
     return 1;
 }

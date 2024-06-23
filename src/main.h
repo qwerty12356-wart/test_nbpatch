@@ -17,6 +17,8 @@
 
 //#define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
 #define debug_print(...) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", __VA_ARGS__)
+#define error_print(...) __android_log_print(ANDROID_LOG_ERROR, "libnbpatcher", __VA_ARGS__)
+#define info_print(...) __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", __VA_ARGS__)
 enum{
     HOUDINI13_39190_INDEX = 0,
     NDK_TRANS13_R125_15853_INDEX = 1,
@@ -45,7 +47,7 @@ static unsigned int GetSizeFromIndex(unsigned short index){
     switch (index){
     case HOUDINI13_39190_INDEX:
     {
-        return 7 * 1024 * 1024;
+        return 6 * 1024 * 1024;
     }
     case NDK_TRANS13_R125_15853_INDEX:
     {
@@ -53,7 +55,7 @@ static unsigned int GetSizeFromIndex(unsigned short index){
     }
     case HOUDINI12_38818_INDEX:
     {
-        return 7 * 1024 * 1024;
+        return 6 * 1024 * 1024;
     }
     default:{
         return 4 * 1024 * 1024;
@@ -62,6 +64,7 @@ static unsigned int GetSizeFromIndex(unsigned short index){
 }
 
 inline void* nbbase = nullptr;
+inline unsigned int nbsize = GetSizeFromIndex(0);
 
 //Details NB specific patches down here.
 void Patch_Permissive_Mprotect_Houdini13_39190();
