@@ -8,7 +8,7 @@ void Patch_Permissive_Mmap_Houdini13_39190(){
     #ifdef IS32BIT 
         res = PatchHex_32(nbbase, 0x27e467, 0x0fbaf002, 0x909090f8);
     #else //default to 64 bit
-        res = PatchHex_32(nbbase, 0x2efd51, 0x48b8fbff, 0xFFFFB848);
+        res = PatchHex_8(nbbase, 0x2efd53, 0xfb, 0xff);
 
     #endif
     if (res){
@@ -75,7 +75,8 @@ void Patch_Permissive_Mmap_Houdini12_38818(){
     #ifdef IS32BIT
         res = PatchHex_32(nbbase, 0x26d3a7, 0x02F0BA0F, 0xF8909090);
     #else
-        res = PatchHex_32(nbbase, 0x2f3ae1, 0xFFFBB848, 0xFFFFB848);
+        //res = PatchHex_32(nbbase, 0x2f3ae1, 0xFFFFB848, 0xFFFFB848);
+        res = PatchHex_8(nbbase, 0x2f3ae3 , 0xfb, 0xff);
     #endif
     if (res){
         debug_print("Patch_Permissive_Mmap failed.");
