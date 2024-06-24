@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <android/log.h>
 #include "main.h"
+#include <unistd.h>
 #if INTPTR_MAX == INT32_MAX
     #define IS_32
 #else
@@ -39,11 +40,15 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
         uint32_t* addrtocheck = (uint32_t*)baseaddress + (uint32_t)offset;
         #else
         uint32_t* addrtocheck = (uint32_t*)baseaddress + offset;
+        
         #endif
         if ((addrtocheck - (uint32_t*)nbbase) > nbsize){
             error_print("Patching out of range!");
             return 1;
         }
+        
+
+
         if (*addrtocheck != original_hex){
             error_print("Hex %u mismatch at %lld (new hex is %u, original_hex is %u)", *addrtocheck, (unsigned long long)addrtocheck, new_hex, original_hex);
             return 1;

@@ -52,6 +52,11 @@ bool patch_substation(){
         error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
         goto end;
     }
+    if (errno){
+        error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
+        goto end;
+    }
+    debug_print("Uncoditional mprotect check: %i", errno);
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
     Patch_Linker_namespace(g_nbindex);
