@@ -4,12 +4,26 @@
 #include <android/log.h>
 #include "main.h"
 #include <unistd.h>
+#include <fcntl.h>
 #if INTPTR_MAX == INT32_MAX
     #define IS_32
 #else
     #define IS_64
 #endif
 
+int is_writeable(void *p)
+{
+    int fd = open("/dev/zero", O_RDONLY);
+    int writeable;
+
+    if (fd < 0)
+        return -1; /* Should not happen */
+
+    writeable = read(fd, p, 1) == 1;
+    close(fd);
+
+    return writeable;
+}
 
 //Please don't jinx this up, compiler
 int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint32_t new_hex){
@@ -42,6 +56,7 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
             error_print("Failed to gain access (gaslighted): %i", errno);
             return 1;
         }
+        
         #ifdef IS_32
         uint32_t* addrtocheck = (uint32_t*)baseaddress + (uint32_t)offset;
         #else
@@ -53,7 +68,10 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
             return 1;
         }
         
-
+        if (is_writeable(addrtocheck) == -1){
+            error_print("Address is not writeable!");
+            return 1;
+        }
 
         if (*addrtocheck != original_hex){
             error_print("Hex %u mismatch at %lld (new hex is %u, original_hex is %u)", *addrtocheck, (unsigned long long)addrtocheck, new_hex, original_hex);
@@ -87,6 +105,11 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
             error_print("Patching out of range!");
             return 1;
         }
+        if (is_writeable(addrtocheck) == -1){
+            error_print("Address is not writeable!");
+            return 1;
+        }
+
         if (*addrtocheck != original_hex){
             error_print("Hex %u mismatch at %lld (new hex is %u, original_hex is %u)", *addrtocheck, (unsigned long long)addrtocheck, new_hex, original_hex);
             return 1;
