@@ -68,7 +68,7 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
             return 1;
         }
         
-        if (is_writeable(addrtocheck) == -1){
+        if (!is_writeable(addrtocheck)){
             error_print("Address is not writeable!");
             return 1;
         }
@@ -105,7 +105,7 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
             error_print("Patching out of range!");
             return 1;
         }
-        if (is_writeable(addrtocheck) == -1){
+        if (!is_writeable(addrtocheck)){
             error_print("Address is not writeable!");
             return 1;
         }
