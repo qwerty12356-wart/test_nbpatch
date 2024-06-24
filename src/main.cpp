@@ -1,8 +1,9 @@
 #include "main.h"
 #include <android/log.h>
-#include <cstdint>
+#include <cerrno>
 #include <cstring>
 #include <dlfcn.h>
+#include <sys/mman.h>
 
 
 
@@ -45,12 +46,17 @@ bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* 
 }
 
 bool patch_substation(){
-    mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
+    
    // uint8_t cucumber = *(uint8_t*)nbbase;
+    if (mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ) != 0){
+        error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
+        goto end;
+    }
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
     Patch_Linker_namespace(g_nbindex);
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+    end:
     return 0;
 }
 
