@@ -63,7 +63,7 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
 
 int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
     #ifdef IS_32
-        uint32_t* addrtocheck = (uint32_t*)baseaddress + (uint32_t)offset;
+        uint8_t* addrtocheck = (uint8_t*)baseaddress + (uint8_t)offset;
         #else
         uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
         #endif
