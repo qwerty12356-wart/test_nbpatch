@@ -32,36 +32,13 @@ int is_readable(void* p){
 //Please don't jinx this up, compiler
 int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint32_t new_hex){
 
-        #ifdef IS_32
-        uint32_t* addrtocheck = (uint32_t*)baseaddress + (uint32_t)offset;
-        #else
-        uint32_t* addrtocheck = (uint32_t*)baseaddress + offset;
-        
-        #endif
-        if ((addrtocheck - (uint32_t*)nbbase) > nbsize){
-            error_print("Patching out of range!");
-            return 1;
-        }
-        
-        if (!is_readable(addrtocheck)){
-            error_print("Address is not readable!");
-            return 1;
-        }
-
-        if (*addrtocheck != original_hex){
-            error_print("Hex %u mismatch at %lld (new hex is %u, original_hex is %u)", *addrtocheck, (unsigned long long)addrtocheck, new_hex, original_hex);
-            return 1;
-        }
-        if (*addrtocheck == new_hex){
-            error_print("Already patched!");
-            return 1;
-        }
-        if (*addrtocheck == original_hex){
-            *addrtocheck = new_hex;
-            info_print("PatchHex_32 Patched successfully");
-            return 0;
-        }
-        error_print("How did we get here");
+    uint8_t* u8orghex = (uint8_t*)&original_hex;
+    uint8_t* u8newhex = (uint8_t*)&new_hex;
+    int ret_val = 0;
+    ret_val |= PatchHex_8(baseaddress, offset, u8orghex[0], u8newhex[0] );
+    ret_val |= PatchHex_8(baseaddress, offset + 1, u8orghex[1], u8newhex[1]);
+    ret_val |= PatchHex_8(baseaddress, offset + 2, u8orghex[2], u8newhex[2]);
+    ret_val |= PatchHex_8(baseaddress, offset + 3, u8orghex[3], u8newhex[3]);
     return 1;
 }
 
