@@ -1,9 +1,6 @@
 #include "main.h"
 #include <android/log.h>
-#include <bits/signal_types.h>
 #include <cerrno>
-#include <cstring>
-#include <dlfcn.h>
 #include <sys/mman.h>
 
 

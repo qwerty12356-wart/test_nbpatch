@@ -1,7 +1,6 @@
 #pragma once
 #include <android/log.h>
 #include <cstdint>
-#include <dlfcn.h>
 
 
 

@@ -3,9 +3,9 @@
 #include <cerrno>
 #include <android/log.h>
 #include "main.h"
-#include <cstring>
+#include <string.h>
+#include <sys/mman.h>
 #include <unistd.h>
-#include <fcntl.h>
 #if INTPTR_MAX == INT32_MAX
     #define IS_32
 #else
@@ -29,9 +29,39 @@ int is_readable(void* p){
     return 1;
 }
 
+int PatchHex_8_mcp(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
+    uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
+    if (!is_readable(addrtocheck)){
+        return 1;
+    }
+    uint8_t memtocheck = 0;
+    memcpy(&memtocheck, addrtocheck, sizeof(uint8_t));
+    if (memtocheck == original_hex){
+        memcpy(addrtocheck, &new_hex, sizeof(uint8_t));
+        return 0;
+    }
+    return 1;
+}
+
+int PatchHex_32_mcp(void *baseaddress, int offset, uint32_t original_hex, uint32_t new_hex){
+    uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
+    if (!is_readable(addrtocheck)){
+        return 1;
+    }
+    uint32_t memtocheck = 0;
+    memcpy(&memtocheck, addrtocheck, sizeof(uint32_t));
+    if (memtocheck == original_hex){
+        memcpy(addrtocheck, &new_hex, sizeof(uint32_t));
+        return 0;
+    }
+    return 1;
+}
+
 //Please don't jinx this up, compiler
 int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint32_t new_hex){
-
+    #ifdef ISTESTING
+        return PatchHex_32_mcp(baseaddress,offset,original_hex,new_hex);
+    #else
     uint8_t* u8orghex = (uint8_t*)&original_hex;
     uint8_t* u8newhex = (uint8_t*)&new_hex;
     int ret_val = 0;
@@ -40,9 +70,13 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
     ret_val |= PatchHex_8(baseaddress, offset + 2, u8orghex[2], u8newhex[2]);
     ret_val |= PatchHex_8(baseaddress, offset + 3, u8orghex[3], u8newhex[3]);
     return ret_val;
+    #endif
 }
 
 int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
+    #ifdef ISTESTING
+        return PatchHex_8_mcp(baseaddress, offset, original_hex, new_hex);
+    #else
     #ifdef IS_32
         uint8_t* addrtocheck = (uint8_t*)baseaddress + (uint8_t)offset;
         #else
@@ -72,4 +106,6 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
         }
         error_print("How did we get here");
     return 1;
+    #endif
 }
+
