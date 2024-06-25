@@ -1,5 +1,6 @@
 #include "main.h"
 #include <android/log.h>
+#include <bits/signal_types.h>
 #include <cerrno>
 #include <cstring>
 #include <dlfcn.h>
@@ -34,6 +35,7 @@ bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* private
     return initreturn;
 }
 */
+
 extern "C"
 bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
     //mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
@@ -45,18 +47,17 @@ bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* 
     return 0;
 }
 
+
+
 bool patch_substation(){
     
    // uint8_t cucumber = *(uint8_t*)nbbase;
-    if (mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ) != 0){
+    
+    if (mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ) == -1){
         error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
         goto end;
     }
-    if (errno){
-        error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
-        goto end;
-    }
-    debug_print("Uncoditional mprotect check: %i", errno);
+    debug_print("Unconditional mprotect check: %i", errno);
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
     Patch_Linker_namespace(g_nbindex);
@@ -71,28 +72,8 @@ bool patch_substation(){
 //Prevent name mangling
 extern "C"
 int patch_main(void* ext_nbbase,unsigned short nbindex){
-
-    /*
-    __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patching initialize");
-    void* nbhandle = dlopen("libhoudini.so", RTLD_LOCAL);
-    NativeBridgeCallbacks* nbcallbacks = (NativeBridgeCallbacks*)dlsym(nbhandle, "NativeBridgeItf");
-    
-    if (ext_nbbase){
-       nbbase = ext_nbbase;
-       nbsize = GetSizeFromIndex(nbindex);
-       g_nbindex = nbindex;
-        if (nbcallbacks->initialize && nbcallbacks->initialize != x_init){
-            org_init = nbcallbacks->initialize;
-            mprotect(nbcallbacks, 128, PROT_EXEC | PROT_WRITE | PROT_READ);
-            nbcallbacks->initialize = (initfn)x_init;
-            mprotect(nbcallbacks, 128, PROT_EXEC | PROT_READ);
-            __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Patched initialize");
-            return 0;
-        }
-    }
-    */
     if (ext_nbbase != 0){
-        __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", "Begin patching with %ld with patches %u", (long)ext_nbbase, nbindex);
+        debug_print("Begin patching with %ld with patches %u", (long)ext_nbbase, nbindex);
         nbbase = ext_nbbase;
          g_nbindex = nbindex;
         nbsize = GetSizeFromIndex(g_nbindex);
