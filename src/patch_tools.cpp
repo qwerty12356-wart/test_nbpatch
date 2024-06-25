@@ -39,7 +39,7 @@ int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint3
     ret_val |= PatchHex_8(baseaddress, offset + 1, u8orghex[1], u8newhex[1]);
     ret_val |= PatchHex_8(baseaddress, offset + 2, u8orghex[2], u8newhex[2]);
     ret_val |= PatchHex_8(baseaddress, offset + 3, u8orghex[3], u8newhex[3]);
-    return 1;
+    return ret_val;
 }
 
 int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
