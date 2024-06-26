@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
 
-option(COMPILE_ARCH "Set compile arch, available value: x86, x86_64")
-option(LOG_DEBUG "Enable debugging logs")
-option(USE_TESTING "Enable experimental feature (Not recommended)")
-
-
 
 if(NOT DEFINED COMPILE_ARCH)
     set(COMPILE_ARCH x86_64)
