@@ -2,9 +2,8 @@
 #include <cstdint>
 #include <cerrno>
 #include <android/log.h>
-#include "main.h"
+#include "logging.h"
 #include <string.h>
-#include <sys/mman.h>
 #include <unistd.h>
 #if INTPTR_MAX == INT32_MAX
     #define IS_32
@@ -82,10 +81,6 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
         #else
         uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
         #endif
-        if ((addrtocheck - (uint8_t*)nbbase) > nbsize){
-            error_print("Patching out of range!");
-            return 1;
-        }
         if (!is_readable(addrtocheck)){
             error_print("Address is not readable!");
             return 1;
@@ -96,8 +91,8 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
             return 1;
         }
         if (*addrtocheck == new_hex){
-            error_print("Already patched!");
-            return 1;
+            info_print("Already patched!");
+            return 0;
         }
         if (*addrtocheck == original_hex){
             *addrtocheck = new_hex;

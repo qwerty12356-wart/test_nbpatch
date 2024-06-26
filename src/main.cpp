@@ -1,7 +1,8 @@
 #include "main.h"
-#include <android/log.h>
+#include "logging.h"
 #include <cerrno>
 #include <sys/mman.h>
+#include <string.h>
 
 
 
@@ -13,34 +14,22 @@ initfn org_init = nullptr;
 unsigned short g_nbindex = HOUDINI13_39190_INDEX;
 
 
-
-/*
-bool x_init(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
-    //privatedir SHOULD contain the app ID or whatever, use it to identify
-    __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", "Begin Hex patching native bridge %ld", (long)nbbase);
-    mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
-    Patch_Permissive_Mprotect(g_nbindex);
-    Patch_Permissive_Mmap(g_nbindex);
-    Patch_Linker_namespace(g_nbindex);
-    const char* found = strstr(privatedir, "com.nexon.bluearchive");
-    if (found != 0){
-        Patch_Performance_Mprotect(g_nbindex);
-    }
-
-    
-    int initreturn = org_init(runtime_cbs, privatedir, insrt_set);
-    return initreturn;
-}
-*/
-
 extern "C"
 bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
-    //mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ);
-    //const char* found = strstr(privatedir, "com.nexon.bluearchive");
-    //if (found != 0){
-     //   Patch_Performance_Mprotect(g_nbindex);
-    //}
-    //mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+    
+    
+    if(!mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ)){
+        
+    
+        const char* found = strstr(privatedir, "com.nexon.bluearchive");
+        if (found){
+            Patch_Performance_Mprotect(g_nbindex);
+        }
+        mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+    }
+    else {
+        error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
+    }
     return 0;
 }
 
@@ -54,7 +43,6 @@ bool patch_substation(){
         error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
         goto end;
     }
-    debug_print("Unconditional mprotect check: %i", errno);
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
     Patch_Linker_namespace(g_nbindex);

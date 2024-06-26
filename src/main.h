@@ -2,7 +2,6 @@
 
 #include <jni.h>
 #include <android/log.h>
-#include <sys/mman.h>
 
 
 #if INTPTR_MAX == INT32_MAX
@@ -15,9 +14,7 @@
 
 
 //#define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
-#define debug_print(...) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", __VA_ARGS__)
-#define error_print(...) __android_log_print(ANDROID_LOG_ERROR, "libnbpatcher", __VA_ARGS__)
-#define info_print(...) __android_log_print(ANDROID_LOG_INFO, "libnbpatcher", __VA_ARGS__)
+
 enum{
     HOUDINI13_39190_INDEX = 0,
     NDK_TRANS13_R125_15853_INDEX = 1,

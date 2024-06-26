@@ -1,6 +1,6 @@
 #include "main.h"
 #include "patch_tools.h"
-
+#include "logging.h"
 
 void Patch_Permissive_MProtect_NDK_Translation_R125_15853(){
     int res = 0;

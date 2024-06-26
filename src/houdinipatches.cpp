@@ -1,3 +1,4 @@
+#include "logging.h"
 #include "main.h"
 #include "patch_tools.h"
 
