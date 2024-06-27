@@ -18,7 +18,8 @@
 enum{
     HOUDINI13_39190_INDEX = 0,
     NDK_TRANS13_R125_15853_INDEX = 1,
-    HOUDINI12_38818_INDEX = 2
+    HOUDINI12_38818_INDEX = 2,
+    HOUDINI11_38765_INDEX = 3
 };
 
 typedef void (*patchfn)();
@@ -65,16 +66,15 @@ inline unsigned int nbsize = GetSizeFromIndex(0);
 //Details NB specific patches down here.
 void Patch_Permissive_Mprotect_Houdini13_39190();
 void Patch_Permissive_Mprotect_Houdini12_38818();
+void Patch_Permissive_Mprotect_HOUDINI11_38765();
 void Patch_Permissive_Mmap_Houdini13_39190();
 void Patch_Permissive_Mmap_Houdini12_38818();
-
+void Patch_Permissive_Mmap_HOUDINI11_38765();
 void Patch_Performance_Mprotect_Houdini13_39190();
 void Patch_Performance_Mprotect_Houdini12_38818();
-
+void Patch_Performance_Mprotect_HOUDINI11_38765();
 void Patch_Permissive_MProtect_NDK_Translation_R125_15853();
-
 void Patch_Permissive_Mmap_NDK_Translation_R125_15853();
-
 void Patch_Linker_namespace_Houdini13_39190();
 void Patch_Linker_namespace_Houdini12_38818();
 
@@ -91,6 +91,11 @@ inline void Patch_Performance_Mprotect(unsigned short index){
         case HOUDINI12_38818_INDEX:
         {
             Patch_Performance_Mprotect_Houdini12_38818();
+            break;
+        }
+        case HOUDINI11_38765_INDEX:
+        {
+            Patch_Performance_Mprotect_HOUDINI11_38765();
             break;
         }
     }
@@ -131,6 +136,10 @@ inline void Patch_Permissive_Mprotect(unsigned short index){
             
             break;
         }
+        case HOUDINI11_38765_INDEX:
+        {
+            Patch_Permissive_Mprotect_HOUDINI11_38765();
+        }
     }
 }
 
@@ -149,6 +158,11 @@ inline void Patch_Permissive_Mmap(unsigned short index){
         case HOUDINI12_38818_INDEX:
         {
             Patch_Permissive_Mmap_Houdini12_38818();
+            break;
+        }
+        case HOUDINI11_38765_INDEX:
+        {
+            Patch_Permissive_Mmap_HOUDINI11_38765();
             break;
         }
     }

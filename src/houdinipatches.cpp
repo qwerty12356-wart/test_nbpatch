@@ -13,7 +13,7 @@ void Patch_Permissive_Mmap_Houdini13_39190(){
 
     #endif
     if (res){
-        debug_print("Patch_Permissive_Mmap failed.");
+        error_print("Patch_Permissive_Mmap failed.");
     }
 
 }
@@ -27,7 +27,7 @@ void Patch_Permissive_Mprotect_Houdini13_39190(){
         res = PatchHex_32(nbbase, 0x2f3778, 0x02F1BA0F, 0xF8909090);
     #endif
     if (res){
-        debug_print("Patch_Permissive_Mprotect failed.");
+        error_print("Patch_Permissive_Mprotect failed.");
     }
 }
 
@@ -41,7 +41,7 @@ void Patch_Performance_Mprotect_Houdini13_39190(){
         res = res | PatchHex_8(nbbase,0x2f3907 , 0xff, 0x90);
     #endif
     if (res){
-        debug_print("Patch_Performace_Mprotect failed.");
+        error_print("Patch_Performace_Mprotect failed.");
     }
 }
 
@@ -55,7 +55,7 @@ void Patch_Performance_Mprotect_Houdini12_38818(){
         res |= PatchHex_8(nbbase, 0x2f7664, 0xff, 0x90);
     #endif
     if (res){
-        debug_print("Patch_Performance_Mprotect failed.");
+        error_print("Patch_Performance_Mprotect failed.");
     }
 }
 
@@ -67,7 +67,7 @@ void Patch_Permissive_Mprotect_Houdini12_38818(){
        res = PatchHex_32(nbbase, 0x2f74e6, 0x02F1BA0F, 0xF8909090);
     #endif
     if (res){
-        debug_print("Patch_Permissive_Mprotect failed.");
+        error_print("Patch_Permissive_Mprotect failed.");
     }
 }
 
@@ -80,7 +80,7 @@ void Patch_Permissive_Mmap_Houdini12_38818(){
         
     #endif
     if (res){
-        debug_print("Patch_Permissive_Mmap failed.");
+        error_print("Patch_Permissive_Mmap failed.");
     }
 }
 
@@ -93,7 +93,7 @@ void Patch_Linker_namespace_Houdini13_39190(){
         res |= PatchHex_8(nbbase, 0x460b7c, 0xff, 0x90);
     #endif
     if (res){
-        debug_print("Patch_Linker_namespace failed.");
+        error_print("Patch_Linker_namespace failed.");
     }
 }
 
@@ -106,6 +106,43 @@ void Patch_Linker_namespace_Houdini12_38818(){
         res |= PatchHex_8(nbbase, 0x335e1e, 0x00, 0x90);
     #endif
     if (res){
-        debug_print("Patch_Linker_namespace failed.");
+        error_print("Patch_Linker_namespace failed.");
+    }
+}
+
+void Patch_Permissive_Mmap_HOUDINI11_38765(){
+    int res = 0;
+    #ifdef IS32BIT
+        //No 32 bit version because im too lazy. Feel free to make a pull request.
+    #else
+        res |= PatchHex_32(nbbase, 0x3062A5, 0xFFFBB848, 0xFFFFB848);
+    #endif
+    if (res){
+        error_print("Patch_Permissive_Mmap Failed.");
+    }
+}
+
+void Patch_Permissive_Mprotect_HOUDINI11_38765(){
+    int res = 0;
+     #ifdef IS32BIT
+        //No 32 bit version because im too lazy. Feel free to make a pull request.
+    #else
+        res |= PatchHex_8(nbbase, 0x3099D8, 0xFB, 0xFF);
+    #endif
+     if (res){
+        error_print("Patch_Permissive_Mprotect Failed.");
+    }
+}
+
+void Patch_Performance_Mprotect_HOUDINI11_38765(){
+    int res = 0;
+    #ifdef IS32BIT
+
+    #else
+        res |= PatchHex_32(nbbase, 0x309B42, 0xEE2F89E8, 0x90909090);
+        res |= PatchHex_8(nbbase, 0x309B46, 0xff, 0x90);
+    #endif
+    if (res){
+        error_print("Patch_Performance_Mprotect failed.");
     }
 }
