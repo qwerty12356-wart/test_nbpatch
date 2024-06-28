@@ -28,7 +28,7 @@ int is_readable(void* p){
     return 1;
 }
 
-int PatchHex_8_mcp(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
+int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_hex){
     uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
     if (!is_readable(addrtocheck)){
         return 1;
@@ -42,7 +42,7 @@ int PatchHex_8_mcp(void* baseaddress, int offset, uint8_t original_hex, uint8_t 
     return 1;
 }
 
-int PatchHex_32_mcp(void *baseaddress, int offset, uint32_t original_hex, uint32_t new_hex){
+int PatchHex_32(void *baseaddress, int offset, uint32_t original_hex, uint32_t new_hex){
     uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
     if (!is_readable(addrtocheck)){
         return 1;
@@ -56,7 +56,7 @@ int PatchHex_32_mcp(void *baseaddress, int offset, uint32_t original_hex, uint32
     return 1;
 }
 
-//Please don't jinx this up, compiler
+/*
 int PatchHex_32(void* baseaddress, uint64_t offset, uint32_t original_hex, uint32_t new_hex){
     #ifdef ISTESTING
         return PatchHex_32_mcp(baseaddress,offset,original_hex,new_hex);
@@ -104,3 +104,4 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
     #endif
 }
 
+*/
