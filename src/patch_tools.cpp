@@ -3,6 +3,7 @@
 #include <cerrno>
 #include <android/log.h>
 #include "logging.h"
+#include <cstring>
 #include <string.h>
 #include <unistd.h>
 #if INTPTR_MAX == INT32_MAX
@@ -39,6 +40,9 @@ int PatchHex_8(void* baseaddress, int offset, uint8_t original_hex, uint8_t new_
         memcpy(addrtocheck, &new_hex, sizeof(uint8_t));
         return 0;
     }
+    if (memtocheck == new_hex){
+        return 0;
+    }
     return 1;
 }
 
@@ -51,6 +55,26 @@ int PatchHex_32(void *baseaddress, int offset, uint32_t original_hex, uint32_t n
     memcpy(&memtocheck, addrtocheck, sizeof(uint32_t));
     if (memtocheck == original_hex){
         memcpy(addrtocheck, &new_hex, sizeof(uint32_t));
+        return 0;
+    }
+    if (memtocheck == new_hex){
+        return 0;
+    }
+    return 1;
+}
+
+int PatchHex_16(void* baseaddress, int offset, uint16_t original_hex, uint32_t new_hex){
+    uint8_t* addrtocheck = (uint8_t*)baseaddress + offset;
+    if (!is_readable(addrtocheck)){
+        return 1;
+    }
+    uint16_t memtocheck = 0;
+    memcpy(&memtocheck, addrtocheck, sizeof(uint16_t));
+    if (memtocheck == original_hex){
+        memcpy(addrtocheck, &new_hex, sizeof(uint16_t));
+        return 0;
+    }
+    if (memtocheck == new_hex){
         return 0;
     }
     return 1;
