@@ -174,3 +174,27 @@ void Patch_Permissive_pkeyMprotect2_Houdini12_38818(){
         error_print("Patch_Permissive_pkeyMprotect2 failed.");
     }
 }
+
+void Patch_Permissive_Mprotect2_Houdini11_38765(){
+     int res = 0;
+    #ifdef IS32BIT
+    
+    #else
+        res |= PatchHex_8(nbbase, 0x30647a, 0xfb, 0xff);
+    #endif
+    if (res){
+        error_print("Patch_Permissive_Mprotect2 failed.");
+    }
+}
+
+void Patch_Permissive_pkeyMprotect2_Houdini11_38765(){
+     int res = 0;
+    #ifdef IS32BIT
+    
+    #else
+        res |= PatchHex_8(nbbase, 0x306552, 0xfb, 0xff);
+    #endif
+    if (res){
+        error_print("Patch_Permissive_pkeyMprotect2 failed.");
+    }
+}
