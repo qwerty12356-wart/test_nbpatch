@@ -78,7 +78,59 @@ void Patch_Permissive_Mmap_NDK_Translation_R125_15853();
 void Patch_Linker_namespace_Houdini13_39190();
 void Patch_Linker_namespace_Houdini12_38818();
 
+void Patch_Permissive_Mprotect2_Houdini12_38818();
+void Patch_Permissive_Mprotect2_Houdini11_38765();
+void Patch_Permissive_Mprotect2_Houdini13_39190();
 
+void Patch_Permissive_pkeyMprotect2_Houdini12_38818();
+void Patch_Permissive_pkeyMprotect2_Houdini11_38765();
+void Patch_Permissive_pkeyMprotect2_Houdini13_39190();
+
+
+
+
+
+//Sub general patches:
+inline void Patch_Permissive_Mprotect2(unsigned short index){
+    switch (index) {
+    case HOUDINI13_39190_INDEX:
+    {
+        Patch_Permissive_Mprotect2_Houdini13_39190();
+        break;
+    }
+    case HOUDINI11_38765_INDEX:
+    {
+        Patch_Permissive_Mprotect2_Houdini11_38765();
+        break;
+    }
+    case HOUDINI12_38818_INDEX:
+    {
+        Patch_Permissive_Mprotect2_Houdini12_38818();
+        break;
+    }
+    }
+}
+
+
+inline void Patch_Permissive_PkeyMprotect2(unsigned short index){
+    switch (index) {
+    case HOUDINI13_39190_INDEX:
+    {
+        Patch_Permissive_pkeyMprotect2_Houdini13_39190();
+        break;
+    }
+    case HOUDINI11_38765_INDEX:
+    {
+        Patch_Permissive_pkeyMprotect2_Houdini11_38765();
+        break;
+    }
+    case HOUDINI12_38818_INDEX:
+    {
+          Patch_Permissive_pkeyMprotect2_Houdini12_38818();
+        break;
+    }
+    }
+}
 
 //General NB patches:
 inline void Patch_Performance_Mprotect(unsigned short index){
