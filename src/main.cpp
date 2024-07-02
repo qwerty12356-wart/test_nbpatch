@@ -46,6 +46,8 @@ bool patch_substation(){
     Patch_Permissive_Mprotect(g_nbindex);
     Patch_Permissive_Mmap(g_nbindex);
     Patch_Linker_namespace(g_nbindex);
+    Patch_Permissive_Mprotect2(g_nbindex);
+    Patch_Permissive_PkeyMprotect2(g_nbindex);
     mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
     end:
     return 0;
