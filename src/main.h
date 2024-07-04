@@ -54,6 +54,10 @@ static unsigned int GetSizeFromIndex(unsigned short index){
     {
         return 6 * 1024 * 1024;
     }
+    case HOUDINI11_38765_INDEX:
+    {
+        return 6*1024*1024; // I forgor to add this.
+    }
     default:{
         return 4 * 1024 * 1024;
     }
