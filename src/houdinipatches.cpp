@@ -1,6 +1,7 @@
 #include "logging.h"
 #include "main.h"
 #include "patch_tools.h"
+#include <cstdint>
 #include <cstring>
 
 
@@ -229,7 +230,8 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190(){
 extern "C"
 int Unk_Function_Hook_helper(void* dlhandle_idk){
     if (dlhandle_idk){
-        char* dlname = *((char**)(dlhandle_idk) + 408); //408 offset contains the dl name..... I think
+        uint8_t* workaroundvar = (uint8_t*)dlhandle_idk + 408;
+        char* dlname = *(char**)workaroundvar;//408 offset contains the dl name..... I think
         if (dlname){ //dlname can be null..... Who could have thought
             int isequal = strcmp(dlname, "libimg_utils.so");
             if (isequal == 0){
