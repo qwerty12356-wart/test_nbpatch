@@ -26,11 +26,12 @@ bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* 
         if (found){
             Patch_Performance_Mprotect(g_nbindex);
         }
-        mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+        
         found = strstr(privatedir, "com.roblox.client");
         if (found){
             Patch_Hook_Unk_Function_Houdini11_38765();
         }
+        mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
     }
     else {
         error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
