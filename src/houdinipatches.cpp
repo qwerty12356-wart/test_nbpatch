@@ -230,9 +230,11 @@ extern "C"
 int Unk_Function_Hook_helper(void* dlhandle_idk){
     if (dlhandle_idk){
         char* dlname = *((char**)(dlhandle_idk) + 408); //408 offset contains the dl name..... I think
-        int isequal = strcmp(dlname, "libimg_utils.so");
-        if (isequal == 0){
-            return 1; //we skip it... IDK WHY
+        if (dlname){ //dlname can be null..... Who could have thought
+            int isequal = strcmp(dlname, "libimg_utils.so");
+            if (isequal == 0){
+                return 1; //we skip it... IDK WHY
+            }
         }
     }
     return 0;
