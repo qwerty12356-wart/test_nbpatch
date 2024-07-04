@@ -227,6 +227,7 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190(){
 }
 //Return 0 if we want to execute the function, 1 if we want to skip it
 extern "C"
+__attribute__((naked))
 int Unk_Function_Hook_helper(void* dlhandle_idk){
     if (dlhandle_idk){
         char* dlname = *((char**)(dlhandle_idk) + 408); //408 offset contains the dl name..... I think
@@ -237,9 +238,9 @@ int Unk_Function_Hook_helper(void* dlhandle_idk){
     }
     return 0;
 }
-
+__attribute__((naked))
 void Unk_Function_Caller(){
-    __asm__( ".intel_syntax\n"//Perserve Registers value and call the helper function
+    __asm__ volatile( ".intel_syntax\n"//Perserve Registers value and call the helper function
         "PUSH rax\n"
         "PUSH rbx\n"
         "PUSH rcx\n"
@@ -256,7 +257,7 @@ void Unk_Function_Caller(){
         "PUSH R15\n"
         "CALL Unk_Function_Hook_helper\n"
     );
-    __asm__(".intel_syntax\n" //Copy the preserved register value. And either continue executing the function or skip it
+    __asm__ volatile(".intel_syntax\n" //Copy the preserved register value. And either continue executing the function or skip it
         "TEST rax,rax\n"
         "POP R15\n"
         "POP R14\n"
