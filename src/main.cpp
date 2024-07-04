@@ -19,7 +19,7 @@ extern "C"
 bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* privatedir, const char* insrt_set){
     
     
-    if(!mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ)){
+    if(mprotect(nbbase, nbsize, PROT_EXEC | PROT_WRITE | PROT_READ)!=-1){
         
     
         const char* found = strstr(privatedir, "com.nexon.bluearchive");
