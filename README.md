@@ -18,6 +18,6 @@ COMPILE_ARCH: Available option x86 (for compiling 32 bit) and x86_64 (default, f
 
 LOG_DEBUG
 
-Example build option: cmake -B build -DCOMPILE_ARCH=x86_64
+Example build option: ``cmake -B build -DCOMPILE_ARCH=x86_64``
 
 
