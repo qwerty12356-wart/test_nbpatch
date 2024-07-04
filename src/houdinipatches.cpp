@@ -1,6 +1,7 @@
 #include "logging.h"
 #include "main.h"
 #include "patch_tools.h"
+#include <cstring>
 
 
 
@@ -222,5 +223,81 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190(){
     #endif
     if (res){
         error_print("Patch_Permissive_pkeyMprotect2 failed.");
+    }
+}
+//Return 0 if we want to execute the function, 1 if we want to skip it
+extern "C"
+int Unk_Function_Hook_helper(void* dlhandle_idk){
+    if (dlhandle_idk){
+        char* dlname = *((char**)(dlhandle_idk) + 408); //408 offset contains the dl name..... I think
+        int isequal = strcmp(dlname, "libimg_utils.so");
+        if (isequal == 0){
+            return 1; //we skip it... IDK WHY
+        }
+    }
+    return 0;
+}
+
+void Unk_Function_Caller(){
+    __asm__( ".intel_syntax\n"//Perserve Registers value and call the helper function
+        "PUSH rax\n"
+        "PUSH rbx\n"
+        "PUSH rcx\n"
+        "PUSH rdx\n"
+        "PUSH rsi\n"
+        "PUSH rdi\n"
+        "PUSH R8\n"
+        "PUSH R9\n"
+        "PUSH R10\n"
+        "PUSH R11\n"
+        "PUSH R12\n"
+        "PUSH R13\n"
+        "PUSH R14\n"
+        "PUSH R15\n"
+        "CALL Unk_Function_Hook_helper\n"
+    );
+    __asm__(".intel_syntax\n" //Copy the preserved register value. And either continue executing the function or skip it
+        "TEST rax,rax\n"
+        "POP R15\n"
+        "POP R14\n"
+        "POP R13\n"
+        "POP R12\n"
+        "POP R11\n"
+        "POP R10\n"
+        "POP R9\n"
+        "POP R8\n"
+        "POP rdi\n"
+        "POP rsi\n"
+        "POP rdx\n"
+        "POP rcx\n"
+        "POP rbx\n"
+        "POP rax\n"
+        "JZ contexec\n"
+        "POP rax\n"
+        "RET\n"
+        "contexec:\n"
+        "POP rax\n"
+        "PUSH rbp\n"
+        "SUB rsp,0x410\n"
+        "PUSH rax\n"
+        "RET\n"
+    );
+
+}
+
+
+void Patch_Hook_Unk_Function_Houdini11_38765(){
+     int res = 0;
+    #ifdef IS32BIT
+    
+    #else
+       res |= PatchHex_8(nbbase, 0x363b60, 0x55, 0xe8); //CALL
+       res |= PatchHex_32(nbbase, 0x363b61, 0x10EC8148,  (char*)Unk_Function_Caller-((char*)nbbase+0x363b65)); //WTF is this? Practically black magic
+       res |= PatchHex_8(nbbase,0x363b65 , 0x04, 0x90);
+       res |= PatchHex_8(nbbase,0x363b66 , 0x00, 0x90);
+       res |= PatchHex_8(nbbase,0x363b67 , 0x0, 0x90);
+    #endif
+    if (res){
+        error_print("Hook_Unk_Function failed.");
     }
 }

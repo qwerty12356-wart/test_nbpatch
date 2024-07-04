@@ -87,7 +87,7 @@ void Patch_Permissive_pkeyMprotect2_Houdini11_38765();
 void Patch_Permissive_pkeyMprotect2_Houdini13_39190();
 
 
-
+void Patch_Hook_Unk_Function_Houdini11_38765();
 
 
 //Sub general patches:
@@ -192,6 +192,17 @@ inline void Patch_Permissive_Mprotect(unsigned short index){
         {
             Patch_Permissive_Mprotect_HOUDINI11_38765();
         }
+    }
+}
+
+inline void Patch_Hook_Unk_Function(unsigned short index){
+    switch (index){
+        case HOUDINI11_38765_INDEX:
+        {
+            Patch_Hook_Unk_Function_Houdini11_38765();
+            break;
+        }
+        
     }
 }
 

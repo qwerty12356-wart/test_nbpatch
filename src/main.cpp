@@ -1,6 +1,7 @@
 #include "main.h"
 #include "logging.h"
 #include <cerrno>
+#include <cstring>
 #include <sys/mman.h>
 #include <string.h>
 
@@ -26,6 +27,10 @@ bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* 
             Patch_Performance_Mprotect(g_nbindex);
         }
         mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
+        found = strstr(privatedir, "com.roblox.client");
+        if (found){
+            Patch_Hook_Unk_Function_Houdini11_38765();
+        }
     }
     else {
         error_print("Failed to gain access to libhoudini, mprotect error code : %i", errno);
