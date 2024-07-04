@@ -227,7 +227,6 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190(){
 }
 //Return 0 if we want to execute the function, 1 if we want to skip it
 extern "C"
-__attribute__((naked))
 int Unk_Function_Hook_helper(void* dlhandle_idk){
     if (dlhandle_idk){
         char* dlname = *((char**)(dlhandle_idk) + 408); //408 offset contains the dl name..... I think
