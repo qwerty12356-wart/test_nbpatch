@@ -386,3 +386,15 @@ void Patch_Hook_Internal_dlopenext_Houdini11_38765(){
         error_print("Hook_dlopenext failed.");
     }
 }
+
+void Patch_Permissive_Mprotect3_Houdini11_38765(){
+    int res = 0;
+     #ifdef IS32BIT
+    
+    #else
+        res |= PatchHex_8(nbbase, 0x30715b, 0xfb, 0xff);
+    #endif
+    if (res){
+        error_print("Patch_Permissive_Mprotect3 failed.");
+    }
+}

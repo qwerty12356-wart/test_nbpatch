@@ -93,6 +93,7 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190();
 
 void Patch_Hook_Unk_Function_Houdini11_38765();
 void Patch_Hook_Internal_dlopenext_Houdini11_38765();
+void Patch_Permissive_Mprotect3_Houdini11_38765();
 
 
 //Sub general patches:
@@ -158,6 +159,15 @@ inline void Patch_Performance_Mprotect(unsigned short index){
     }
 }
 
+inline void Patch_Permissive_Mprotect3(unsigned short index){
+    switch (index){
+        case HOUDINI11_38765_INDEX:
+        {
+            Patch_Permissive_Mprotect3_Houdini11_38765();
+            break;
+        }
+    }
+}
 
 inline void Patch_Linker_namespace(unsigned short index){
     switch(index){
