@@ -13,7 +13,7 @@
 
 
 
-//#define debug_print(mesg) __android_log_print(ANDROID_LOG_DEBUG, "libnbpatcher", mesg)
+
 
 enum{
     HOUDINI13_39190_INDEX = 0,
@@ -92,6 +92,7 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190();
 
 
 void Patch_Hook_Unk_Function_Houdini11_38765();
+void Patch_Hook_Internal_dlopenext_Houdini11_38765();
 
 
 //Sub general patches:
@@ -207,6 +208,16 @@ inline void Patch_Hook_Unk_Function(unsigned short index){
             break;
         }
         
+    }
+}
+
+inline void Patch_Hook_Internal_dlopenext(unsigned short index){
+    switch (index){
+        case HOUDINI11_38765_INDEX:
+        {
+            Patch_Hook_Internal_dlopenext_Houdini11_38765();
+            break;
+        }
     }
 }
 

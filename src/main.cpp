@@ -29,7 +29,8 @@ bool onDemandPatch(const NativeBridgeRuntimeCallbacks* runtime_cbs, const char* 
         
         found = strstr(privatedir, "com.roblox.client");
         if (found){
-            Patch_Hook_Unk_Function_Houdini11_38765();
+            Patch_Hook_Unk_Function(g_nbindex);
+            Patch_Hook_Internal_dlopenext(g_nbindex);
         }
         mprotect(nbbase, nbsize, PROT_EXEC | PROT_READ);
     }

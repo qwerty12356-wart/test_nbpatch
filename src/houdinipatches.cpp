@@ -230,11 +230,12 @@ void Patch_Permissive_pkeyMprotect2_Houdini13_39190(){
 extern "C"
 int Unk_Function_Hook_helper(void* dlhandle_idk){
     if (dlhandle_idk){
-        uint8_t* workaroundvar = (uint8_t*)dlhandle_idk + 408;
+        uint8_t* workaroundvar = (uint8_t*)dlhandle_idk + 408; //This is here to workaround the compiler from multiplying the offset by 8
         char* dlname = *(char**)workaroundvar;//408 offset contains the dl name..... I think
         if (dlname){ //dlname can be null..... Who could have thought
             int isequal = strcmp(dlname, "libimg_utils.so");
             if (isequal == 0){
+                debug_print("Skipped %s, dlhandle_idk is %lld", dlname, (unsigned long long)dlhandle_idk);
                 return 1; //we skip it... IDK WHY
             }
         }
@@ -290,6 +291,7 @@ void Unk_Function_Caller(){
 }
 
 
+
 void Patch_Hook_Unk_Function_Houdini11_38765(){
      int res = 0;
     #ifdef IS32BIT
@@ -303,5 +305,84 @@ void Patch_Hook_Unk_Function_Houdini11_38765(){
     #endif
     if (res){
         error_print("Hook_Unk_Function failed.");
+    }
+}
+
+extern "C"
+int dlopen_internal_hook(char* dlname){
+    if (dlname){
+        char* found = strstr(dlname, "libneuralnetworks.so");
+        if (found == NULL){
+            return 0;
+        }
+        found = strstr(dlname, "librvcapture_camera.so");
+        if (found == NULL)
+        {
+            return 0;
+        }
+        debug_print("Skipped %s", dlname);
+        return 1;
+    }
+    return 0; //continue execution as normal
+}
+
+
+void dlopenext_internal_hook_func_caller(){
+    __asm__ volatile( 
+        ".intel_syntax\n"
+        "PUSH rax\n"
+        "PUSH rbx\n"
+        "PUSH rcx\n"
+        "PUSH rdx\n"
+        "PUSH rsi\n"
+        "PUSH rdi\n"
+        "PUSH R8\n"
+        "PUSH R9\n"
+        "PUSH R10\n"
+        "PUSH R11\n"
+        "PUSH R12\n"
+        "PUSH R13\n"
+        "PUSH R14\n"
+        "PUSH R15\n"
+        "CALL dlopen_internal_hook\n"
+        "TEST rax,rax\n"
+        "POP R15\n"
+        "POP R14\n"
+        "POP R13\n"
+        "POP R12\n"
+        "POP R11\n"
+        "POP R10\n"
+        "POP R9\n"
+        "POP R8\n"
+        "POP rdi\n"
+        "POP rsi\n"
+        "POP rdx\n"
+        "POP rcx\n"
+        "POP rbx\n"
+        "POP rax\n"
+        "JZ contexec1\n"
+        "POP rax\n"
+        "RET\n"
+        "contexec1:\n"
+        "POP rax\n"
+        "PUSH R12\n"
+        "PUSH R13\n"
+        "PUSH r14\n"
+        "PUSH rax\n"
+        "RET\n"
+    );
+}
+
+void Patch_Hook_Internal_dlopenext_Houdini11_38765(){
+     int res = 0;
+    #ifdef IS32BIT
+    
+    #else
+        res |= PatchHex_8(nbbase, 0x3614a0, 0x41, 0xe8);
+        res |= PatchHex_32(nbbase, 0x3614a1, 0x41554154, (char*)dlopenext_internal_hook_func_caller-((char*)nbbase+0x3614a5));
+        res |= PatchHex_8(nbbase, 0x3614a5, 0x56, 0x90);
+    #endif
+    if (res){
+        error_print("Hook_dlopenext failed.");
     }
 }
