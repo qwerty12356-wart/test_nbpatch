@@ -309,21 +309,25 @@ void Patch_Hook_Unk_Function_Houdini11_38765(){
 }
 
 extern "C"
-int dlopen_internal_hook(char* dlname){
-    if (dlname){
-        char* found = strstr(dlname, "libneuralnetworks.so");
-        if (found == NULL){
-            return 0;
-        }
-        found = strstr(dlname, "librvcapture_camera.so");
-        if (found == NULL)
-        {
-            return 0;
-        }
+int dlopen_internal_hook(char* andr_namespace,char* dlname){
+    debug_print("Dlopened lib: %s", dlname);
+    if (!dlname){
+        return 0;
+    }
+    char* found = nullptr;
+    found = strstr(dlname, "libneuralnetworks.so");
+    if (found){
         debug_print("Skipped %s", dlname);
         return 1;
     }
-    return 0; //continue execution as normal
+    found = strstr(dlname, "librvcapture_camera.so");
+    if (found){
+        debug_print("Skipped %s", dlname);
+        return 1;
+    }
+
+    return 0;
+     //continue execution as normal
 }
 
 
@@ -362,6 +366,7 @@ void dlopenext_internal_hook_func_caller(){
         "POP rax\n"
         "JZ contexec1\n"
         "POP rax\n"
+        "XOR rax,rax\n"
         "RET\n"
         "contexec1:\n"
         "POP rax\n"
